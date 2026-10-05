@@ -385,13 +385,14 @@ main { padding-bottom: 3rem; }
 }
 
 .reveal {
-  opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  opacity: 1;
+  transform: none;
+  transition: none;
 }
+
 .reveal.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 @media (max-width: 980px) {
@@ -926,5 +927,411 @@ main { padding-bottom: 3rem; }
   .hero-copy {
     max-width: 31rem;
     font-size: 0.98rem;
+  }
+}
+
+/* =========================================================
+   THE DIMLITS — VIDEO HERO
+   Desktop/tablet: looping rehearsal video.
+   Mobile: preserve the lightbulb-logo hero treatment.
+   ========================================================= */
+
+/* Hide the old image hero if legacy markup is still present. */
+.hero-media > .hero-photo {
+  display: none !important;
+}
+
+.hero-video {
+  display: block;
+  width: 100%;
+  height: min(84vh, 920px);
+  object-fit: cover;
+  object-position: center center;
+  background: #080808;
+}
+
+/* Keep all overlays above the moving video. */
+.hero-media::before {
+  z-index: 1;
+}
+
+.hero-watermark,
+.hero-overlay-card {
+  z-index: 3;
+}
+
+/* A slightly stronger shadow helps the watermark remain readable over motion. */
+.hero-watermark {
+  opacity: 0.72;
+  filter:
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 8px 26px rgba(0, 0, 0, 0.55));
+}
+
+@media (max-width: 720px) {
+  /* Keep the previously approved mobile brand hero instead of autoplay video. */
+  .hero-video {
+    display: none !important;
+  }
+
+  .hero-media {
+    min-height: 72vh;
+    height: 72vh;
+  }
+
+  .hero-mobile-logo {
+    display: block;
+  }
+}
+
+
+/* =========================================================
+   VISIBILITY SAFETY FIX
+   Keep all EPK content visible even without IntersectionObserver JS.
+   ========================================================= */
+.reveal,
+.reveal.is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Video hero fallback and layout safety */
+.hero-media {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-video {
+  display: block;
+  width: 100%;
+  min-height: min(84vh, 920px);
+  height: min(84vh, 920px);
+  object-fit: cover;
+  object-position: center center;
+  background-color: #080808;
+}
+
+/* If video cannot play, its poster remains visible. */
+.hero-video[poster] {
+  background-size: cover;
+  background-position: center;
+}
+
+@media (max-width: 720px) {
+  .hero-video {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   THE DIMLITS — STILL-TO-VIDEO HERO TRANSITION
+   The band photo is a real overlay, not the video's poster attribute.
+   ========================================================= */
+
+.hero-video {
+  position: relative;
+  z-index: 0;
+}
+
+/* Still photo sits over the loaded/paused video. */
+.hero-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.9s ease,
+    visibility 0s linear 0.9s;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* Added only after video playback actually begins. */
+.hero-poster.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Shading / branding / copy stay above both still and video. */
+.hero-media::before {
+  z-index: 2;
+}
+
+.hero-watermark {
+  z-index: 3;
+}
+
+.hero-overlay-card {
+  z-index: 4;
+}
+
+.hero-mobile-logo {
+  z-index: 3;
+}
+
+@media (max-width: 720px) {
+  /* Preserve the approved lightbulb-only mobile hero. */
+  .hero-video,
+  .hero-poster,
+  .hero-watermark {
+    display: none !important;
+  }
+}
+
+
+/* =========================================================
+   THE DIMLITS — MOBILE VIDEO + HORIZONTAL OVERFLOW FIX
+   Final overrides: keep this block at the END of styles.css.
+   ========================================================= */
+
+/* Prevent the document canvas from exposing a white strip on the right. */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  background-color: #090909;
+}
+
+html {
+  background:
+    linear-gradient(180deg, #0b0b0b, #080808 50%, #0b0b0b);
+}
+
+body,
+main,
+.site-header,
+.hero,
+.section,
+.site-footer {
+  min-width: 0;
+  max-width: 100%;
+}
+
+img,
+video {
+  max-width: 100%;
+}
+
+/* Make sure off-canvas decorative glows never expand the mobile page width. */
+.ambient {
+  pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  /* The earlier mobile design explicitly hid the video.
+     These rules intentionally reverse that behavior. */
+  .hero-video {
+    display: block !important;
+    position: relative;
+    z-index: 0;
+    width: 100% !important;
+    max-width: 100%;
+    min-height: 0;
+    height: 72vh;
+    object-fit: cover;
+    object-position: center center;
+    background: #080808;
+  }
+
+  /* Keep the still-image intro/crossfade on mobile too. */
+  .hero-poster {
+    display: block !important;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100% !important;
+    max-width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 42%;
+  }
+
+  /* Use the horizontal wordmark over the moving footage.
+     The separate bulb-only mobile hero is retired. */
+  .hero-watermark {
+    display: block !important;
+    z-index: 3;
+    top: 1rem;
+    width: min(52vw, 210px);
+    max-width: 210px;
+    opacity: 0.64;
+  }
+
+  .hero-mobile-logo {
+    display: none !important;
+  }
+
+  .hero-media {
+    width: 100%;
+    max-width: 100%;
+    min-height: 72vh;
+    height: 72vh;
+    aspect-ratio: auto;
+    overflow: hidden;
+  }
+
+  /* Keep CTA readable over video while preserving most of the footage. */
+  .hero-media::before {
+    z-index: 2;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.08) 0%,
+        rgba(0, 0, 0, 0.00) 42%,
+        rgba(0, 0, 0, 0.10) 60%,
+        rgba(0, 0, 0, 0.76) 100%
+      );
+  }
+
+  .hero-overlay-card {
+    top: auto !important;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    width: auto;
+    max-width: none;
+  }
+
+  /* These blurred blobs were wide enough to create overflow
+     in some mobile browsers / screenshot tools. */
+  .ambient {
+    display: none;
+  }
+
+  /* Extra containment for cards and grids on very narrow screens. */
+  .members-grid,
+  .music-layout,
+  .quote-grid,
+  .download-panel,
+  .brand-assets,
+  .brand-mark-grid,
+  .stat-grid,
+  .downloads,
+  .shows,
+  .contact-card,
+  .member-card,
+  .feature-panel,
+  .mini-panel,
+  .quote-card,
+  .download-card,
+  .show-item {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* Modern browsers: clip overflow without creating a horizontal scroll area. */
+@supports (overflow: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
+
+/* =========================================================
+   THE DIMLITS — MOBILE INTRO: BULB LOGO -> VIDEO
+   Desktop: band photo -> video
+   Mobile:  bulb logo -> video
+   ========================================================= */
+
+@media (max-width: 720px) {
+
+  /* Keep the rehearsal video active on mobile. */
+  .hero-video {
+    display: block !important;
+    position: relative;
+    z-index: 0;
+    width: 100% !important;
+    max-width: 100%;
+    height: 72vh;
+    min-height: 0;
+    object-fit: cover;
+    object-position: center center;
+    background: #080808;
+  }
+
+  /*
+   * The desktop still image remains in the DOM for desktop use,
+   * but is not the mobile intro layer.
+   */
+  .hero-poster {
+    display: none !important;
+  }
+
+  /* Hide the desktop wordmark watermark on phones. */
+  .hero-watermark {
+    display: none !important;
+  }
+
+  /*
+   * The bulb becomes the mobile intro layer.
+   * It uses the same .is-hidden class as the desktop poster fade.
+   */
+  .hero-mobile-logo {
+    position: absolute;
+    z-index: 3;
+    top: 43%;
+    left: 50%;
+    display: block !important;
+    width: min(58vw, 250px);
+    max-width: 250px;
+    height: auto !important;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.9s ease,
+      visibility 0s linear 0.9s;
+    filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.35));
+    pointer-events: none;
+    will-change: opacity;
+  }
+
+  .hero-mobile-logo.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .hero-media {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    min-height: 72vh;
+    height: 72vh;
+    overflow: hidden;
+    background: #0b0b0b;
+  }
+
+  /* Keep copy readable after the bulb fades into the video. */
+  .hero-media::before {
+    z-index: 2;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.05) 0%,
+        rgba(0, 0, 0, 0.00) 42%,
+        rgba(0, 0, 0, 0.08) 60%,
+        rgba(0, 0, 0, 0.76) 100%
+      );
+  }
+
+  .hero-overlay-card {
+    top: auto !important;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    width: auto;
+    max-width: none;
   }
 }
