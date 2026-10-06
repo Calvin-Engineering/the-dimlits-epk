@@ -43,8 +43,8 @@ const heroVideo = document.querySelector(".hero-video");
 const heroPoster = document.querySelector(".hero-poster");
 const heroMobileLogo = document.querySelector(".hero-mobile-logo");
 
-const heroStartTime = 30;       // seconds: first video frame to use
-const heroEndTime = 75;         // seconds: jump back to start here
+const heroStartTime = 21;       // seconds: first video frame to use
+const heroEndTime = 42;         // seconds: jump back to start here
 const heroPosterDelay = 3000;   // milliseconds: still photo hold time
 
 if (heroVideo && heroPoster) {
